@@ -27,7 +27,7 @@
 1. Создать Deployment приложения, состоящего из двух контейнеров — nginx и multitool. Решить возникшую ошибку.
 
 ## Решение:
-Манифест с ошибкой: [deployment-multi-broken.yaml](deployment-multi-broken.yaml)
+Манифест с ошибкой: [deployment-multi-broken.yaml](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/deployment-multi-broken.yaml)
 
 Под переходит в статус `1/2 Error`, в логе контейнера `multitool` видно:
 
@@ -40,11 +40,11 @@ nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address in use)
 
 Нужно перевести multitool на другой порт через переменные окружения `HTTP_PORT=8080` и `HTTPS_PORT=11443`.
 
-Исправленный манифест: [deployment-multi.yaml](deployment-multi.yaml)
+Исправленный манифест: [deployment-multi.yaml](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/deployment-multi.yaml)
 
 Скриншот ошибки:
 
-![Ошибка Address in use](img/task1-error.png)
+![Ошибка Address in use](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/screenshots/01.png)
 
 
 2. После запуска увеличить количество реплик работающего приложения до 2.
@@ -59,17 +59,17 @@ kubectl get pods
 
 Количество подов до (1) и после (2) масштабирования:
 
-![Масштабирование](img/task1-scale.png)
+![Масштабирование](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/screenshots/02.png)
 
 3. Продемонстрировать количество подов до и после масштабирования.
 ## Решение:
-Манифест: [service-multi.yaml](service-multi.yaml)
+Манифест: [service-multi.yaml](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/service-multi.yaml)
 
 Service `multi-svc` (ClusterIP) пробрасывает порт 80 на nginx и порт 8080 на multitool. В Endpoints адреса обеих реплик.
 
 4. Создать Service, который обеспечит доступ до реплик приложений из п.1.
 ## Решение:
-Манифест отдельного пода с multitool: [pod-multitool.yaml](pod-multitool.yaml)
+Манифест отдельного пода с multitool: [pod-multitool.yaml](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/pod-multitool.yaml)
 
 Команды:
 
@@ -81,7 +81,7 @@ kubectl exec multitool-client -- curl -s multi-svc:8080
 
 На порт 80 отвечает nginx, на порт 8080 отвечает multitool.
 
-![Service и curl](img/task1-svc-curl.png)
+![Service и curl](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/screenshots/03.png)
 
 5. Создать отдельный Pod с приложением multitool и убедиться с помощью `curl`, что из пода есть доступ до приложений из п.1.
 ------
@@ -91,8 +91,8 @@ kubectl exec multitool-client -- curl -s multi-svc:8080
 1. Создать Deployment приложения nginx и обеспечить старт контейнера только после того, как будет запущен сервис этого приложения.
 ## Решение:
 Манифесты:
-- Deployment: [deployment-init.yaml](deployment-init.yaml)
-- Service: [service-init.yaml](service-init.yaml)
+- Deployment: [deployment-init.yaml](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/deployment-init.yaml)
+- Service: [service-init.yaml](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/service-init.yaml)
 
 Init-контейнер на `busybox:1.28` в цикле проверяет через `nslookup`, что DNS-имя Service `nginx-init-svc` разрешается.
 Пока Service не создан, основной контейнер nginx не стартует.
@@ -103,11 +103,13 @@ kubectl get pods -l app=nginx-init
 kubectl logs -l app=nginx-init -c wait-for-svc --tail=3
 ```
 
-![Состояние до](img/task2-before.png)
+![Состояние до](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/screenshots/04.png)
 
 
 
 2. Убедиться, что nginx не стартует. В качестве Init-контейнера взять busybox.
+3. Создать и запустить Service. Убедиться, что Init запустился.
+4. Продемонстрировать состояние пода до и после запуска сервиса.
 ## Решение:
 ```bash
 kubectl apply -f service-init.yaml
@@ -117,12 +119,12 @@ kubectl get svc,endpoints nginx-init-svc
 
 После создания Service init-контейнер завершился, и под прошёл `Init:0/1` → `PodInitializing` → `Running`.
 
-![Состояние после](img/task2-after.png)
-3. Создать и запустить Service. Убедиться, что Init запустился.
-## Решение:
+![Состояние после](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/screenshots/05.png)
 
-4. Продемонстрировать состояние пода до и после запуска сервиса.
-## Решение:
+![kubernetes](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/screenshots/06.png)
+
+
+![kubernetes](https://github.com/valdemar-2502/Running-applications-in-K8S-Homeworks/blob/main/screenshots/07.png)
 
 ------
 
