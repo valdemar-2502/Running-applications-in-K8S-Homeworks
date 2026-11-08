@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multi-app-broken
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multi-app-broken
+  template:
+    metadata:
+      labels:
+        app: multi-app-broken
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+      - name: multitool
+        image: wbitt/network-multitool:minimal
+        imagePullPolicy: IfNotPresent
